@@ -1,5 +1,6 @@
 ﻿using Chat.Api.Domain;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,19 @@ namespace Chat.Api.Data
             BsonClassMap.RegisterClassMap<User>(x =>
             {
                 x.AutoMap();
-                x.MapIdField(c => c.Id);
+                x.MapIdField(c => c.Id).SetIdGenerator(new StringObjectIdGenerator());
+            });
+
+            BsonClassMap.RegisterClassMap<Conversation>(x =>
+            {
+                x.AutoMap();
+                x.MapIdField(c => c.Id).SetIdGenerator(new StringObjectIdGenerator());
+            });
+
+            BsonClassMap.RegisterClassMap<Message>(x =>
+            {
+                x.AutoMap();
+                x.MapIdField(c => c.Id).SetIdGenerator(new StringObjectIdGenerator());
             });
         }
     }

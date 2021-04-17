@@ -42,7 +42,8 @@ namespace Chat.Api.Services.Auth
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub,user.Id.ToString())
+                new Claim(System.Security.Claims.ClaimTypes.NameIdentifier,user.Id.ToString()),
+                new Claim(System.Security.Claims.ClaimTypes.Name,user.Username)
             };
             var token = new JwtToken()
             {
@@ -54,9 +55,9 @@ namespace Chat.Api.Services.Auth
         public async  Task Register(RegisterDto dto)
         {
             var isExistByEmail = await _mongoProvider.Querable.AnyAsync(c => c.Email.Equals(dto.Email));
-            if (isExistByEmail) return;
+            if (isExistByEmail) throw new ArgumentException($"Account with email {dto.Email} exist");
             var isExistByUsername = await _mongoProvider.Querable.AnyAsync(c => c.Username.Equals(dto.Username));
-            if (isExistByUsername) return;
+            if (isExistByUsername) throw new ArgumentException($"Account with username {dto.Username} exist");
             var salt = _encrypter.GenerateRandomSalt();
             var user = new User()
             {

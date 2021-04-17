@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace Chat.Api.Domain
 {
-    public class Conversation
+    public class Message
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public List<string> UserIds { get; set; }
+        public string ConversationId { get; set; }
+        public string Content { get; set; }
+        public string Username { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

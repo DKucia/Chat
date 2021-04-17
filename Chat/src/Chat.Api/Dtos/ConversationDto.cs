@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Chat.Api.Domain
+namespace Chat.Api.Dtos
 {
-    public class Conversation
+    public class ConversationDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public List<string> UserIds { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

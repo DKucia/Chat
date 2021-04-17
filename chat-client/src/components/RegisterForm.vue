@@ -7,8 +7,8 @@
     <input type="text" name="username" v-model="username" />
     <label for="password">Password</label>
     <input type="password" name="password" v-model="password" />
-    <label for="repeatPassword">Repeat password</label>
-    <input type="password" name="repeatPassword" v-model="repeatPassword" />
+    <label for=" repetedPassword">Repeat password</label>
+    <input type="password" name=" repetedPassword" v-model="repetedPassword" />
 
     <button @click="onSubmit">Register</button>
   </div>
@@ -20,10 +20,20 @@ export default {
     return {
       email: "",
       password: "",
-      repeatPassword: "",
+      repetedPassword: "",
       username: "",
     };
   },
+  methods:{
+    onSubmit(){
+      this.$emit('register-submit',{
+        email:this.email,
+        password:this.password,
+        repetedPassword:this.repetedPassword,
+        username:this.username
+      });
+    },
+  }
 };
 </script>
 
