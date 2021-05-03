@@ -8,6 +8,7 @@ using Chat.Api.Data;
 using Chat.Api.Hubs;
 using Chat.Api.Services;
 using Chat.Api.Services.Auth;
+using Chat.Api.Services.Avatar;
 using Chat.Api.Settings;
 using Chat.Api.Validators;
 using FluentValidation.AspNetCore;
@@ -43,6 +44,7 @@ namespace Chat.Api
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtHandler, JwtHandler>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IAvatarService, AvatarService>();
             services.AddScoped<IConversationService, ConversationService>();
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.AddAuthentication(options=> {
@@ -136,8 +138,9 @@ namespace Chat.Api
             app.UseAuthentication();
             app.UseRouting();
             app.UseCors("default");
-
+            
             app.UseAuthorization();
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

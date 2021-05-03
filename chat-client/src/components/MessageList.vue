@@ -33,5 +33,6 @@ export default {
 <style scoped>
     div{
         flex: 10;
+       overflow: auto;
     }
 </style>

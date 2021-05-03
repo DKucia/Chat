@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login";
 import Register from "../views/Register";
 import Chat from "../views/Chat";
+import Avatar from "../views/Avatar";
 import store from '../store';
 
 const ifAuthenticated = (to, from, next) => {
@@ -27,6 +28,12 @@ const routes = [
     path: "/",
     name: "Chat",
     component: Chat,
+    beforeEnter: ifAuthenticated,
+  },
+  {
+    path: "/avatar",
+    name: "Avatar",
+    component: Avatar,
     beforeEnter: ifAuthenticated,
   },
 ];

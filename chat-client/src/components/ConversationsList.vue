@@ -27,11 +27,11 @@ export default {
 
 <style scoped>
     .conversations{
-        cursor: pointer;
         box-sizing: border-box;
         padding: 15px;
         width: 25%;
         display: flex;
+        flex-direction: column;
         height: 100%;
         border: 1px solid grey;
     }

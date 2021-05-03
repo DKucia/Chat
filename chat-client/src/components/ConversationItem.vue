@@ -1,5 +1,5 @@
 <template>
-  <div class="conversation-item active">
+  <div class="conversation-item " :class="{active: isActive }" @click="select">
       <img src="../assets/avatar.png" alt="f"/>
       <div>
           <h4>{{conversation.name}}</h4>
@@ -9,16 +9,30 @@
 </template>
 
 <script>
+import {mapActions,mapGetters} from 'vuex';
 export default {
     name:"ConversationItem",
+    computed:{
+        ...mapGetters(["selectedConverationId"]),
+        isActive(){
+            return this.conversation.id===this.selectedConverationId;
+        }
+    },
     props:{
         conversation:Object,
+    },
+    methods:{
+        ...mapActions(["selectConversation"]),
+        select(){
+            this.selectConversation(this.conversation.id);
+        }
     }
 }
 </script>
 
 <style scoped>
     .conversation-item{
+        cursor: pointer;
         box-sizing: border-box;
         padding:  10px;
         border-radius: 8px;
@@ -33,6 +47,8 @@ export default {
     }
 
     img{
+        display: block;
+        width: 80px;
         margin-right: 15px;
     }
     h4{

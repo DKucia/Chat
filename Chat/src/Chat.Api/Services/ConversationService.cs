@@ -19,9 +19,9 @@ namespace Chat.Api.Services
             _conversationRepostiory = conversationRepostiory;
         }
 
-        public async Task<List<Conversation>> GetConversations(string userId, int size = 10)
+        public async Task<List<Conversation>> GetConversations(string username, int size = 10)
         {
-            return await _conversationRepostiory.Querable.Where(c => c.UserIds.Contains(userId)).Take(size).ToListAsync();
+            return await _conversationRepostiory.Querable.Where(c => c.MemberUsernames.Contains(username)).Take(size).ToListAsync();
         }
 
         public async Task<Conversation> GetConversationById(string conversationId)
@@ -34,9 +34,17 @@ namespace Chat.Api.Services
             await _conversationRepostiory.Collection.InsertOneAsync(conversation);
         }
 
-        public async Task<bool> HasAccessToConversation(string userId, string conversationId)
+        public async Task<bool> HasAccessToConversation(string username, string conversationId)
         {
-            return await _conversationRepostiory.Querable.AnyAsync(c => c.Id.Equals(conversationId) && c.UserIds.Contains(userId));
+            return await _conversationRepostiory.Querable.AnyAsync(c => c.Id.Equals(conversationId) && c.MemberUsernames.Contains(username));
+        }
+
+        public async Task AddUserToCoversation(string conversationId,string username)
+        {
+            var conversation = await _conversationRepostiory.Querable.FirstOrDefaultAsync(c => c.Id.Equals(conversationId));
+            conversation.MemberUsernames.Add(username);
+            var filter = Builders<Conversation>.Filter.Eq(s => s.Id, conversationId);
+            await _conversationRepostiory.Collection.ReplaceOneAsync(filter, conversation);
         }
     }
 }

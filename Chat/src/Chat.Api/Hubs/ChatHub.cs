@@ -1,5 +1,6 @@
 ﻿using Chat.Api.Domain;
 using Chat.Api.Services;
+using Chat.Api.Services.Avatar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -16,16 +17,18 @@ namespace Chat.Api.Hubs
         private static ConcurrentDictionary<string, string> _connectedUsers;
         private readonly IMessageService _messageService;
         private readonly IConversationService _conversationService;
+        private readonly IAvatarService _avatarService;
 
         static ChatHub()
         {
             _connectedUsers = new ConcurrentDictionary<string, string>();
         }
 
-        public ChatHub(IMessageService messageService,IConversationService conversationService)
+        public ChatHub(IMessageService messageService,IConversationService conversationService,IAvatarService avatarService)
         {
             _messageService = messageService;
             _conversationService = conversationService;
+            _avatarService = avatarService;
         }
 
         public async Task SendMessage(string conversationId,string content)
@@ -41,26 +44,26 @@ namespace Chat.Api.Hubs
                 Username=Context.User.Identity.Name
             };
             await _messageService.InsertMessage(message);
-            var connetions = GetConnectonsIds(conversation.UserIds);
-            await Clients.Clients(connetions).ReceiveMessage(message.AsDto());
+            var connetions = GetConnectonsIds(conversation.MemberUsernames);
+            await Clients.Clients(connetions).ReceiveMessage(message.AsDto(_avatarService));
         }
 
         public override Task OnConnectedAsync()
         {
-            _connectedUsers.TryAdd(this.Context.UserIdentifier, this.Context.ConnectionId);
+            _connectedUsers.TryAdd(this.Context.User.Identity.Name, this.Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _connectedUsers.TryRemove(Context.UserIdentifier, out var g);
+            _connectedUsers.TryRemove(this.Context.User.Identity.Name, out var _);
             return base.OnDisconnectedAsync(exception);
         }
 
-        private List<string> GetConnectonsIds(List<string> userIds)
+        private List<string> GetConnectonsIds(List<string> usernames)
         {
             var results = new List<string>();
-            userIds.ForEach(c =>
+            usernames.ForEach(c =>
             {
                 if (_connectedUsers.TryGetValue(c, out var val))
                 {

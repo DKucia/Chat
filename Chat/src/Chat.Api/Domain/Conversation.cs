@@ -9,7 +9,7 @@ namespace Chat.Api.Domain
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public List<string> UserIds { get; set; }
+        public List<string> MemberUsernames { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

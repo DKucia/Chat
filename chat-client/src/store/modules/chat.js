@@ -17,13 +17,15 @@ axios.interceptors.response.use(
 const state = {
   conversations: [],
   messages:[],
-  selectedConverationId:null
+  selectedConverationId:null,
+  avatar:null
 };
 
 const getters = {
   conversations: (state) => state.conversations,
   messages: state=> state.messages,
-  selectedConverationId: state=>state.selectedConverationId
+  selectedConverationId: state=>state.selectedConverationId,
+  avatar: state=>state.avatar
 };
 
 const actions = {
@@ -55,8 +57,29 @@ const actions = {
       );
       commit('setMessages',response.data);
   },
-  addMessage({commit},message){
+  addMessage({commit,getters},message){
+    if(message.conversationId!==getters.selectedConverationId) return;
     commit('newMessage',message);
+  },
+
+  async loadAvatar({commit}){
+    let response = await axios.get(
+      "https://localhost:44310/api/avatar",{
+        'headers':{
+            'Authorization':`Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    );
+    commit("setAvatar",response.data)
+  },
+
+  async setNewAvatar({commit},form){
+    var response=await axios.post("https://localhost:44310/api/avatar",form,{
+      'headers':{
+          'Authorization':`Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    commit("setAvatar",response.data);
   }
 };
 
@@ -73,6 +96,10 @@ const mutations = {
   },
   newMessage(state,message){
       state.messages=[...state.messages,message];
+  },
+
+  setAvatar(state,avatar){
+    state.avatar=avatar;
   }
 };
 
