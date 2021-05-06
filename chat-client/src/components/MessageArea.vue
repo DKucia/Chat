@@ -21,6 +21,8 @@ export default {
 
 <style scoped>
     .message-area{
+        box-sizing: border-box;
+        padding: 10px 20px;
         display: flex;
         flex-direction: column;
         width: 100%;

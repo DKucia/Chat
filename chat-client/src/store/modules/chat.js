@@ -80,6 +80,18 @@ const actions = {
       }
     });
     commit("setAvatar",response.data);
+  },
+
+  async createConversation({commit},form){
+    var response=await axios.post("https://localhost:44310/api/chat/conversations",form,{
+      'headers':{
+          'Authorization':`Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    commit("addConversation",response.data);
+  },
+  addNewConversation({commit},conversation){
+    commit('addConversation',conversation);
   }
 };
 
@@ -100,6 +112,10 @@ const mutations = {
 
   setAvatar(state,avatar){
     state.avatar=avatar;
+  },
+
+  addConversation(state,conversation){
+    state.conversations=[conversation,...state.conversations];
   }
 };
 

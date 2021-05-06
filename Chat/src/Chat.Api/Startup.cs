@@ -45,6 +45,7 @@ namespace Chat.Api
             services.AddScoped<IJwtHandler, JwtHandler>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IAvatarService, AvatarService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IConversationService, ConversationService>();
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.AddAuthentication(options=> {

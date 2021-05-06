@@ -19,13 +19,14 @@ export default {
     .message{
 
         background-color: #CCF2CF;
-        min-width: 50px;
+        width: 50%;
         border-radius: 14px;
         margin-bottom: 10px;
         
     }
 
     img{
+        border-radius: 50%;
         width: 40px;
         height: 40px;
     }

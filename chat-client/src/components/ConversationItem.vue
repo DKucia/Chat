@@ -47,6 +47,7 @@ export default {
     }
 
     img{
+        border-radius: 50%;
         display: block;
         width: 80px;
         margin-right: 15px;

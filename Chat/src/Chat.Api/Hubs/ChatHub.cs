@@ -59,6 +59,14 @@ namespace Chat.Api.Hubs
             _connectedUsers.TryRemove(this.Context.User.Identity.Name, out var _);
             return base.OnDisconnectedAsync(exception);
         }
+        public static string GetConntetionId(string username)
+        {
+            if (_connectedUsers.TryGetValue(username, out var val))
+            {
+                return val;
+            }
+            return null; 
+        }
 
         private List<string> GetConnectonsIds(List<string> usernames)
         {

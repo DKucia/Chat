@@ -9,5 +9,6 @@ namespace Chat.Api.Hubs
     public interface IChatHub
     {
         Task ReceiveMessage(MessageDto messageDto);
+        Task NewConversation(ConversationDto conversationDto);
     }
 }

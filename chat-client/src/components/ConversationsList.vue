@@ -1,26 +1,36 @@
 <template>
   <div class="conversations" >
+        <CreateConversationForm/>
         <ConversationItem  :conversation="conversation" v-for="conversation in conversations" :key="conversation.id"/>
       </div>
 </template>
 
 <script>
 import ConversationItem from '../components/ConversationItem';
+import CreateConversationForm from '../components/CreateConversationForm';
+import signal from '../services/signal';
 import {mapActions,mapGetters} from 'vuex';
 
 export default {
     components:{
-        ConversationItem
+        ConversationItem,
+        CreateConversationForm
     },
     name:'ConversationsList',
     methods:{
-        ...mapActions(['loadConversations','selectConversation']),
+        ...mapActions(['loadConversations','selectConversation','addNewConversation']),
+
+        addConversation(conversation){
+            console.log(conversation);
+            this.addNewConversation(conversation);
+        }
     },
     computed:{
         ...mapGetters(['conversations']),
     },
-    created(){
-        this.loadConversations();
+    async created(){
+        await this.loadConversations();
+        signal.connection.on('NewConversation',this.addConversation);
     }
 }
 </script>

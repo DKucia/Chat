@@ -1,9 +1,11 @@
 ﻿using Chat.Api.Domain;
 using Chat.Api.Dtos;
+using Chat.Api.Hubs;
 using Chat.Api.Services;
 using Chat.Api.Services.Avatar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +21,17 @@ namespace Chat.Api.Controllers
         private readonly IConversationService _conversationService;
         private readonly IMessageService _messageService;
         private readonly IAvatarService _avatarService;
+        private readonly IUserService _userService;
+        private readonly IHubContext<ChatHub, IChatHub> _hubContext;
 
-        public ChatController(IConversationService conversationService,IMessageService messageService,IAvatarService avatarService)
+        public ChatController(IConversationService conversationService,IMessageService messageService
+            ,IAvatarService avatarService,IUserService userService,IHubContext<ChatHub,IChatHub> hubContext)
         {
             _conversationService = conversationService;
             _messageService = messageService;
             _avatarService = avatarService;
+            _userService = userService;
+            _hubContext = hubContext;
         }
 
         [HttpGet("conversations")]
@@ -47,6 +54,8 @@ namespace Chat.Api.Controllers
         [HttpPost("conversations")]
         public async Task<IActionResult> CreateConversation(CreateConversationDto dto)
         {
+            var isExist = await _userService.IsExist(dto.Username);
+            if (!isExist) throw new Exception($"User with username= {dto.Username} don't exist");
             var conversation = new Conversation()
             {
                 CreatedOn = DateTime.Now,
@@ -54,6 +63,11 @@ namespace Chat.Api.Controllers
                 MemberUsernames= new List<string>() { dto.Username,HttpContext.User.Identity.Name}
             };
             await _conversationService.InsertConversation(conversation);
+            var connectionId = ChatHub.GetConntetionId(dto.Username);
+            if (connectionId != null)
+            {
+                await _hubContext.Clients.Client(connectionId).NewConversation(conversation.AsDto());
+            }
             return Ok(conversation.AsDto());
         }
     }
